@@ -7,10 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,6 +17,8 @@ import com.tendensee.ui.home.HomeScreen
 import com.tendensee.ui.navigation.Screen
 import com.tendensee.viewmodel.HabitViewModel
 import com.tendensee.ui.theme.TendenSeeTheme
+import com.tendensee.ui.SplashScreen
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,25 +35,32 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TendenSeeTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    // Simple ViewModel instantiation. In a real app use Hilt or ViewModelProvider.Factory properly.
-                    // For this scratchpad MVP, we can just create it if no args needed, but we need 'application'.
-                    // So we use the factory.
-                    val viewModel: HabitViewModel = viewModel(
-                        factory = androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-                    )
+                    var showSplash by remember { mutableStateOf(true) }
+                    
+                    LaunchedEffect(Unit) {
+                        delay(2000)
+                        showSplash = false
+                    }
 
-                    NavHost(navController = navController, startDestination = Screen.Home.route) {
-                        composable(Screen.Home.route) {
-                            HomeScreen(navController = navController, viewModel = viewModel)
-                        }
-                        composable(Screen.AddHabit.route) {
-                            com.tendensee.ui.habit.AddHabitScreen(navController = navController, viewModel = viewModel)
+                    if (showSplash) {
+                        SplashScreen()
+                    } else {
+                        val navController = rememberNavController()
+                        val viewModel: HabitViewModel = viewModel(
+                            factory = androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+                        )
+
+                        NavHost(navController = navController, startDestination = Screen.Home.route) {
+                            composable(Screen.Home.route) {
+                                HomeScreen(navController = navController, viewModel = viewModel)
+                            }
+                            composable(Screen.AddHabit.route) {
+                                com.tendensee.ui.habit.AddHabitScreen(navController = navController, viewModel = viewModel)
+                            }
                         }
                     }
                 }
