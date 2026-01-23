@@ -61,6 +61,13 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.AddHabit.route) {
                                 com.tendensee.ui.habit.AddHabitScreen(navController = navController, viewModel = viewModel)
                             }
+                            composable(
+                                route = Screen.HabitDetail.route,
+                                arguments = listOf(androidx.navigation.navArgument("habitId") { type = androidx.navigation.NavType.IntType })
+                            ) { backStackEntry ->
+                                val habitId = backStackEntry.arguments?.getInt("habitId") ?: return@composable
+                                com.tendensee.ui.habit.HabitDetailScreen(navController = navController, viewModel = viewModel, habitId = habitId)
+                            }
                         }
                     }
                 }

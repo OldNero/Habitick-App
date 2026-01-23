@@ -89,4 +89,16 @@ class HabitViewModel(application: Application) : AndroidViewModel(application) {
             initialValue = emptyList()
         )
     }
+
+    fun getAllRecordsForHabit(habitId: Int): StateFlow<List<HabitRecord>> {
+        return repository.getAllRecordsForHabit(habitId).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+    }
+
+    suspend fun getHabitById(habitId: Int): Habit? {
+        return repository.getHabitById(habitId)
+    }
 }

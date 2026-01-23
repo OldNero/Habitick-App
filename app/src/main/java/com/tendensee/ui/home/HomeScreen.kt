@@ -110,6 +110,9 @@ fun HomeScreen(
                         onToggle = { isDone, note ->
                             viewModel.toggleHabitCompletion(habit.id, today, isDone, note = note)
                         },
+                        onItemClick = {
+                            navController.navigate(Screen.HabitDetail.createRoute(habit.id))
+                        },
                         recentRecords = recordsByHabit[habit.id] ?: emptyList()
                     )
                 }
@@ -123,6 +126,7 @@ fun HabitItem(
     habit: Habit,
     isDone: Boolean,
     onToggle: (Boolean, String?) -> Unit,
+    onItemClick: () -> Unit,
     recentRecords: List<HabitRecord> = emptyList()
 ) {
     val strength = com.tendensee.utils.HabitStrengthCalculator.calculateStrength(recentRecords)
@@ -161,7 +165,11 @@ fun HabitItem(
         )
     }
 
-    ShadcnCard(modifier = Modifier.fillMaxWidth()) {
+    ShadcnCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onItemClick() }
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

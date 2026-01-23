@@ -64,4 +64,12 @@ class HabitRepository(private val habitDao: HabitDao) {
     fun getRecordsInRange(start: Long, end: Long): Flow<List<HabitRecord>> {
         return habitDao.getAllRecords(start, end)
     }
+
+    fun getAllRecordsForHabit(habitId: Int): Flow<List<HabitRecord>> {
+        return habitDao.getAllRecordsForHabit(habitId)
+    }
+
+    suspend fun getHabitById(id: Int): Habit? {
+        return habitDao.getHabitById(id)
+    }
 }
